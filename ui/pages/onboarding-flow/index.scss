@@ -1,0 +1,26 @@
+@use "design-system";
+@import 'recovery-phrase/index';
+@import 'onboarding-app-header/index';
+@import 'secure-your-wallet/index';
+@import 'privacy-settings/index';
+@import 'create-password/index';
+@import 'creation-successful/index';
+@import 'welcome/index';
+@import 'pin-extension/index';
+@import 'metametrics/index';
+
+.onboarding-flow {
+  &--welcome-banner {
+    background: url('/images/welcome-banner.png') no-repeat 50% 160px;
+    background-color: var(--color-accent03-light);
+  }
+
+  &--welcome-login {
+    background: url('/images/welcome-page.png') no-repeat center top;
+    background-color: var(--color-accent02-dark);
+  }
+
+  &__x-button__icon {
+    margin-bottom: -6px;
+  }
+}
