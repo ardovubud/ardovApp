@@ -1,0 +1,57 @@
+name: Auto-update for PR targeting release branch
+
+on:
+  pull_request:
+    branches:
+      - Version-v*
+
+jobs:
+  auto-update:
+    name: Auto-update
+    runs-on: ubuntu-latest
+    env:
+      YARN_ENABLE_IMMUTABLE_INSTALLS: false
+      YARN_ENABLE_HARDENED_MODE: false
+      INFURA_PROJECT_ID: 00000000000
+    permissions:
+      pull-requests: write
+      contents: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Prevent loops and execute if not bot commit authoring loop protection check in a single step to avoid unnecessary executions of subsequent steps if not needed.
+        id : prevent-loops-and-execute-if-needed 
+        run : |
+          author_name=$(git log -1 --pretty=format:'%an')
+          if [ "$author_name" = "ardovApp Bot" ]; then 
+            echo "The author of the most recent commit is ardovApp Bot. Exiting the workflow."
+            exit 0 
+          fi 
+
+          corepack enable
+
+          node-version=$(cat .nvmrc)
+          
+          nvm install $node-version # Install node version directly from .nvmrc without using setup-node action to save on time and resources.
+
+           yarn dedupe
+
+           yarn lavamoat:auto 
+
+           yarn attributions\:generate 
+           
+           git config --global user.name 'ardovApp Bot'
+           git config --global user.email 'ardovappbot@users.noreply.github.com'
+           
+            if ! git diff --exit-code; then # If there are changes detected, i.e., the command returns non-zero, meaning there are changes.
+              echo "Changes detected, committing..."
+              git commit -am "release\: dedupe, update LavaMoat policies, update attributions"
+              git push   
+            else    
+             echo "No changes detected"
+            fi   
