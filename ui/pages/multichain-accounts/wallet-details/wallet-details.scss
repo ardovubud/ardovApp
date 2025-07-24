@@ -1,0 +1,120 @@
+/* CSS code */
+.wallet-details-page {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.wallet-details-page__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wallet-details-page__row {
+  border: 2px solid #4CAF50;
+  padding: 20px;
+  box-shadow: 5px 5px #888888;
+
+  &--last {
+    margin-bottom: -10px !important; /* Adjust negative margin for last row */
+
+    .border_radius(border);
+    .box_shadow(box);
+
+    &:after {
+      content:'';
+      clear: both;
+    }
+
+    @media (max-width : $mobile) {
+      display : block ;
+
+      & > div{
+        width : calc (100% / $columns) ;
+        float : left ;
+        box_shadow($box, right);
+
+        &:nth_child(odd){
+          clear : both ;
+        }
+
+        &:nth_child(even){
+          clear : none ;
+        }
+      }
+    }
+
+    @media (min-width : $tablet) {
+      display     : flex   ;
+      flex        : wrap    ;
+
+      & > div{
+        width     : calc ($columnWidth * var(--col)) - $gutter * var(--col - 1)   /* Subtract gutter for non first columns */
+
+        @include respondto($tablet, max) {
+          order      = var(--order)    /* Ordering for tablets and smaller screens */
+
+          &:first_child{
+            order     = auto              /* Remove first child order if needed on small screens */
+
+            &::before{
+              content       :" "
+              font          :" 'FontAwesome' "
+              font         :-webkit         // Safari only
+              text          :-moz           // Firefox only
+                  transform    :"rotate(-90deg)"
+            }
+
+            &::after{
+              content       :" "
+              font          :" 'FontAwesome' "
+
+              margin        :-4em            /* Adjust as needed to align properly with icon in front of text*/
+
+              transform     :-webkit         // Safari only
+                  rotate      ("90deg")
+            }
+          }
+
+          &:last_child{
+            order      = var(--lastOrder)
+            &::after{content:" \f17a"}/* Add icon to end of row on small screens*/
+          }
+
+          &--$modifierClass&::before, &--$modifierClass&::after{content:" "}/* Remove icons from modified rows on small screens*/
+
+          @for $i from --start through --end {$i + start}{// Make modifier classes from start to end values
+            --$classPrefix#{@integer(@counter)}:&nth_child(#{$i + start}){"#{$classPrefix#@integer(@counter)}"}
+
+            .#{@prefix}##{$i}&::before, .#{@prefix}##{$i}&::after{content:" "}/* Remove icons from modified rows on small screens*/
+          };
+
+          /*@include media($tablet){// Apply modifications at tablet breakpoint and upwards */}
+       };
+     };
+   };
+
+   @mixin borderRadius($bradius){
+     borderRadius:$bradius
+   };
+
+   @mixin boxShadow($color,$offset){
+     boxShadow:$color $offset $offset
+   };
+
+   @mixin respondto($breakpoint,$condition){
+     @$breakpoint-{
+       &$condition:{
+         paddingLeft!important
+         paddingRight!important
+       }};
+
+     @$breakpoint+2:{
+       &$condition:{
+         paddingLeft!important
+         paddingRight!important
+
+       }}
+     };
+   };
+
