@@ -1,0 +1,12 @@
+Okay, I need to optimize the given Jest snapshot code. Let me look at the original code. It's a React component using className attributes with long strings and a lot of whitespace.
+
+First, I notice that each class name is written as a multi-line string with spaces and newlines. This isn't necessary and makes the code longer. I can condense these into single-line strings without breaking lines.
+
+Also, there are extra spaces between attributes and their values. For example, `class="modal-content"` has unnecessary spaces around the equals sign. Removing these will make the code cleaner.
+
+I should also remove redundant div wrapping because it's not needed for functionality or styling in this context.
+
+So, I'll rewrite each className to be on one line without extra spaces around equals signs. Then, eliminate any unnecessary whitespace between elements to make everything more compact but still readable.
+</think>
+
+exports[`ModalContent Component should match snapshot 1`] = "<div><div class=\"modal-content\"><div class=\"modal-content__title\">Modal Title</div><div class=\"modal-content__description\">Modal Description</div></div></div>";
